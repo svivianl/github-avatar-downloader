@@ -39,11 +39,18 @@ function getRepoContributors(repoOwner, repoName, cb){
   };
 
   app(options, function(err, res, body) {
-    cb(err, body);
+    cb(err, JSON.parse(body));
   });
 }
 
 getRepoContributors("jquery", "jquery", function(err, result) {
-  console.log("Errors:", err);
-  console.log("Result:", result);
+  if(err){
+    console.log('Error: ', err.message);
+  }
+
+  result.forEach(data => {
+    console.log(`\n*************************************\nLogin: ${data.login} \nAvatar: ${data.avatar_url}`);
+  });
+  // console.log("Errors:", err);
+  // console.log("Result:", result);
 });
