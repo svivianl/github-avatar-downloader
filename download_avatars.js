@@ -1,6 +1,7 @@
-var app = require('request');
-var fs = require('fs');
-var dir = './avatars/';
+var secrets = request('./secrets');
+var app     = require('request');
+var fs      = require('fs');
+var dir     = './avatars/';
 
 // var myArgs = process.argv.slice(2);
 // var repoOwner = myArgs[0];
@@ -29,8 +30,15 @@ console.log('Welcome to the GitHub Avatar Downloader!');
 
 // cb: callback function
 function getRepoContributors(repoOwner, repoName, cb){
-  var url = "https://api.github.com/repos/" + repoOwner + "/" + repoName + "/contributors";
-  app(url, function(err, res, body) {
+  var options = {
+    url: "https://api.github.com/repos/" + repoOwner + "/" + repoName + "/contributors",
+    headers: {
+      'User-Agent': 'request',
+    Authorization: secrets.GITHUB_TOKEN
+    }
+  };
+
+  app(options, function(err, res, body) {
     cb(err, body);
   });
 }
