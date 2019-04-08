@@ -64,8 +64,5 @@ function downloadImageByURL(url, filePath){
        console.log(err.message);
        // throw err;
       })
-      .on('response', function (response) {                           // Note 3
-         console.log('Response Status Code: ', response.statusCode);
-       })
       .pipe(fs.createWriteStream(filePath));               // Note 4
 }
