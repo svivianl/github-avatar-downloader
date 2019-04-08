@@ -3,26 +3,32 @@ var req     = require('request');
 var fs      = require('fs');
 var dir     = './avatars/';
 
-// var myArgs = process.argv.slice(2);
-// var repoOwner = myArgs[0];
-// var repo = myArgs[1];
+var myArgs = process.argv.slice(2);
+var repoOwner = myArgs[0];
+var repo = myArgs[1];
 
 console.log('Welcome to the GitHub Avatar Downloader!');
 
-// creates the directory
-if (!fs.existsSync(dir)){
-  // fs.mkdirSync(dir);
-  fs.mkdir(dir, { recursive: true }, (err) => {
-    if (err){
-      console.log(e.message);
-      return;
-    }else{
-      getRepoContributors("jquery", "jquery", loopData );
-    }
-  });
+try{
 
-}else{
-  getRepoContributors("jquery", "jquery", loopData );
+  // creates the directory
+  if (!fs.existsSync(dir)){
+    // fs.mkdirSync(dir);
+    fs.mkdir(dir, { recursive: true }, (err) => {
+      if (err){
+        console.log(e.message);
+        return;
+      }else{
+        getRepoContributors(repoOwner, repo, loopData );
+      }
+    });
+
+  }else{
+    getRepoContributors(repoOwner, repo, loopData );
+  }
+
+}catch(e){
+  console.log(e.message);
 }
 
 // cb: callback function
