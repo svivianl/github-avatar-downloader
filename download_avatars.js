@@ -3,12 +3,12 @@ var req     = require('request');
 var fs      = require('fs');
 var dir     = './avatars/';
 
-var myArgs = process.argv.slice(2);
+var myArgs    = process.argv.slice(2);
 var repoOwner = myArgs[0];
-var repo = myArgs[1];
+var repoName  = myArgs[1];
 
 if(myArgs.length < 2){
-  console.log('Please insert the "repository owner" and "repository"');
+  console.log('Please insert the "repository owner" and "repository name"');
 
 }else{
   console.log('Welcome to the GitHub Avatar Downloader!');
@@ -22,13 +22,14 @@ if(myArgs.length < 2){
         if (err){
           console.log(e.message);
           return;
+
         }else{
-          getRepoContributors(repoOwner, repo, loopData );
+          getRepoContributors(repoOwner, repoName, loopData );
         }
       });
 
     }else{
-      getRepoContributors(repoOwner, repo, loopData );
+      getRepoContributors(repoOwner, repoName, loopData );
     }
 
   }catch(e){
@@ -42,16 +43,18 @@ function getRepoContributors(repoOwner, repoName, cb){
     url: "https://api.github.com/repos/" + repoOwner + "/" + repoName + "/contributors",
     headers: {
       'User-Agent': 'request',
-    Authorization: secrets.GITHUB_TOKEN
+      Authorization: secrets.GITHUB_TOKEN
     }
   };
 
+  // call API
   req(options, function(err, res, body) {
       if(err){
         console.log('Error: ', err.message);
       }
 
       if(res.statusCode === 200){
+        // loop through data
         cb(err, JSON.parse(body));
       }
     });
@@ -64,7 +67,6 @@ function loopData(err, result){
 
   result.forEach(data => {
     downloadImageByURL(data.avatar_url, `${dir}/${data.login}.jpg`);
-    // console.log(`\n*************************************\nLogin: ${data.login} \nAvatar: ${data.avatar_url}`);
   });
 }
 
@@ -72,8 +74,7 @@ function downloadImageByURL(url, filePath){
 
   req.get(url)               // Note 1
       .on('error', function (err) {                                   // Note 2
-       console.log(err.message);
-       // throw err;
+       throw err;
       })
       .pipe(fs.createWriteStream(filePath));               // Note 4
 }
