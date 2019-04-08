@@ -1,4 +1,4 @@
-var secrets = request('./secrets');
+var secrets = require('./secrets');
 var app     = require('request');
 var fs      = require('fs');
 var dir     = './avatars/';
