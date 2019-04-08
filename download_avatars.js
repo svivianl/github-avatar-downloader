@@ -29,7 +29,10 @@ console.log('Welcome to the GitHub Avatar Downloader!');
 
 // cb: callback function
 function getRepoContributors(repoOwner, repoName, cb){
-
+  var url = "https://api.github.com/repos/" + repoOwner + "/" + repoName + "/contributors";
+  app(url, function(err, res, body) {
+    cb(err, body);
+  });
 }
 
 getRepoContributors("jquery", "jquery", function(err, result) {
