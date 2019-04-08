@@ -7,28 +7,33 @@ var myArgs = process.argv.slice(2);
 var repoOwner = myArgs[0];
 var repo = myArgs[1];
 
-console.log('Welcome to the GitHub Avatar Downloader!');
+if(myArgs.length < 2){
+  console.log('Please insert the "repository owner" and "repository"');
 
-try{
+}else{
+  console.log('Welcome to the GitHub Avatar Downloader!');
 
-  // creates the directory
-  if (!fs.existsSync(dir)){
-    // fs.mkdirSync(dir);
-    fs.mkdir(dir, { recursive: true }, (err) => {
-      if (err){
-        console.log(e.message);
-        return;
-      }else{
-        getRepoContributors(repoOwner, repo, loopData );
-      }
-    });
+  try{
 
-  }else{
-    getRepoContributors(repoOwner, repo, loopData );
+    // creates the directory
+    if (!fs.existsSync(dir)){
+      // fs.mkdirSync(dir);
+      fs.mkdir(dir, { recursive: true }, (err) => {
+        if (err){
+          console.log(e.message);
+          return;
+        }else{
+          getRepoContributors(repoOwner, repo, loopData );
+        }
+      });
+
+    }else{
+      getRepoContributors(repoOwner, repo, loopData );
+    }
+
+  }catch(e){
+    console.log(e.message);
   }
-
-}catch(e){
-  console.log(e.message);
 }
 
 // cb: callback function
