@@ -1,5 +1,5 @@
 var secrets = require('./secrets');
-var app     = require('request');
+var req     = require('request');
 var fs      = require('fs');
 var dir     = './avatars/';
 
@@ -9,24 +9,21 @@ var dir     = './avatars/';
 
 console.log('Welcome to the GitHub Avatar Downloader!');
 
+// creates the directory
+if (!fs.existsSync(dir)){
+  // fs.mkdirSync(dir);
+  fs.mkdir(dir, { recursive: true }, (err) => {
+    if (err){
+      console.log(e.message);
+      return;
+    }else{
+      getRepoContributors("jquery", "jquery", loopData );
+    }
+  });
 
-// // creates the directory
-// if (!fs.existsSync(dir)){
-//   // fs.mkdirSync(dir);
-//   fs.mkdir(dir, { recursive: true }, (err) => {
-//   if (err){
-//     console.log(e.message);
-//   }else{
-//     //
-//   }
-// });
-// }
-
-// app(url, (error, resp, body) =>{
-
-//     console.log("Errors:", err);
-//     console.log("Result:", result);
-// })
+}else{
+  getRepoContributors("jquery", "jquery", loopData );
+}
 
 // cb: callback function
 function getRepoContributors(repoOwner, repoName, cb){
@@ -38,19 +35,37 @@ function getRepoContributors(repoOwner, repoName, cb){
     }
   };
 
-  app(options, function(err, res, body) {
-    cb(err, JSON.parse(body));
-  });
+  req(options, function(err, res, body) {
+      if(err){
+        console.log('Error: ', err.message);
+      }
+
+      if(res.statusCode === 200){
+        cb(err, JSON.parse(body));
+      }
+    });
 }
 
-getRepoContributors("jquery", "jquery", function(err, result) {
+function loopData(err, result){
   if(err){
     console.log('Error: ', err.message);
   }
 
   result.forEach(data => {
-    console.log(`\n*************************************\nLogin: ${data.login} \nAvatar: ${data.avatar_url}`);
+    downloadImageByURL(data.avatar_url, `${dir}/${data.login}.jpg`);
+    // console.log(`\n*************************************\nLogin: ${data.login} \nAvatar: ${data.avatar_url}`);
   });
-  // console.log("Errors:", err);
-  // console.log("Result:", result);
-});
+}
+
+function downloadImageByURL(url, filePath){
+
+  req.get(url)               // Note 1
+      .on('error', function (err) {                                   // Note 2
+       console.log(err.message);
+       // throw err;
+      })
+      .on('response', function (response) {                           // Note 3
+         console.log('Response Status Code: ', response.statusCode);
+       })
+      .pipe(fs.createWriteStream(filePath));               // Note 4
+}
